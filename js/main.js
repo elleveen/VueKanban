@@ -25,11 +25,28 @@ Vue.component('column', {
         }
 
     },
+    methods:{
+        localSaveFirstColumn(){
+            localStorage.setItem('column_1', JSON.stringify(this.column_1));
+        },
+        localSaveSecondColumn(){
+            localStorage.setItem('column_2', JSON.stringify(this.column_2));
+        },
+    },
 
     mounted() {
+        this.column_1= JSON.parse(localStorage.getItem("column_1")) || [];
+        this.column_2 = JSON.parse(localStorage.getItem("column_2")) || [];
 
         eventBus.$on('addColumn_1', card => {
             this.column_1.push(card)
+            this.localSaveFirstColumn()
+
+        })
+        eventBus.$on('addColumn_2', card => {
+            this.column_2.push(card)
+            this.localSaveSecondColumn();
+
 
         })
     },
@@ -162,41 +179,47 @@ Vue.component('column_2', {
     },
     template: `
         <section id="main" class="main-alt">
-            <div class="column">
-                <p>В процессе</p>
+            <div class="column column__two">
+            <p>Задачи в работе</p>
                 <div class="card" v-for="card in column_2">
-                <h3>{{ card.name }}</h3>
-                    <ul class="tasks" v-for="task in card.points"
-                        v-if="task.name != null"
-                        @click="TaskCompleted(card, task)"
-                        :class="{completed: task.completed}">
-                        <li >
-                        {{ task.name }}
-                        </li>
-                        
-                    </ul>
+                <br>
+                   <div class="tasks">Название: {{ card.name }}</div>
+                    <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Дата создания: {{ card.date }}</div>
+                    <div class="tasks">Крайний срок: {{ card.deadline }}</div>
+                    <div class="tasks" v-if="card.reason.length">Причина переноса: <p v-for="reason in card.reason">{{ reason }}</p></div>
+                    <div class="tasks" v-if="card.editDate != null">Последнее изменение: {{ card.editDate }}</div>
+                    <div class="tasks" v-if="card.edit">
+                    <br>
+                        <form @submit.prevent="updateTask(card)">
+                            <p>Новое название: 
+                                <input type="text" v-model="card.name" placeholder="Название">
+                            </p>
+                            <p>Новое описание: 
+                                <textarea v-model="card.description"></textarea>
+                            </p>
+                            <p>
+                                <input type="submit" class="btn" value="Изменить карточку">
+                            </p>
+                        </form>
+                    </div>
+                    <a @click="card.edit = true" class="red">Редактировать</a><br>
+                    <a @click="nextColumn(card)">Следующая колонка</a>
                 </div>
             </div>
         </section>
     `,
     methods: {
-        TaskCompleted(ColumnCard, task) {
-            if(task.completed === false){
-                task.completed = true
-                ColumnCard.status += 1
-            }
-            let count = 0
-            for(let i = 0; i < 5; i++){
-                if (ColumnCard.points[i].name !== null) {
-                    count++
-                }
-            }
-            if (( ColumnCard.status / count) * 100 >= 100 ) {
-                eventBus.$emit('addColumn_3', ColumnCard)
-                ColumnCard.date = new Date().toLocaleString()
+        nextColumn(card) {
+            this.column_2.splice(this.column_2.indexOf(card), 1)
+            eventBus.$emit('addColumn_3', card)
+        },
 
-
-            }
+        updateTask(card) {
+            card.editDate = new Date().toLocaleString()
+            card.edit = false
+            this.column_2.push(card)
+            this.column_2.splice(this.column_2.indexOf(card), 1)
         }
     }
 })

@@ -139,6 +139,8 @@ button:hover {
     font-size: 20px;
     color: white;
     font-family: "Calibri Light";
+    word-wrap: break-word;
+
 }
 
 .del{
@@ -150,7 +152,6 @@ button:hover {
 .red{
     color: #665993;
     font-size: 20px;
-    margin-left: 20px;
 }
 
 .card>a:last-child{
