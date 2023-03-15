@@ -91,29 +91,23 @@ Vue.component('column', {
 
 Vue.component('add_task', {
     template: `
-    <section id="main" class="main">
-    
-        <form class="row" @submit.prevent="Submit">
-        <div class="form_control">
-            <div class="form_name">
-                <input required type="text" v-model="name" id="name" placeholder="Введите название заметки"/>
+    <div class="addForm">
+        <form>
+            <div class="form__control">
+                <div class="form__name field">
+
+                    <input id="point" required v-model="name" type="text" placeholder="Название">
+                </div>
+            <div class="field">
+                <textarea required id="point" v-model="description" placeholder="Описание"> </textarea>
             </div>
-            
-            <input required type="text"  v-model="point_1" placeholder="Первый пункт"/>
-            <br>
-            <input required type="text"  v-model="point_2" placeholder="Второй пункт"/>
-            <br>
-            <input required type="text"  v-model="point_3" placeholder="Третий пункт"/> 
-            <br>
-            <input  type="text"  v-model="point_4"  placeholder="Четвертый пункт"/>
-            <br>
-             <input type="text" v-model="point_5"  placeholder="Пятый пункт"/>
-        </div>
-            <div class="form_control">
-                <button>Отправить</button>
+            <div class="field">
+                <input required type="date" id="point" v-model="deadline">
+            </div>
+            <button type="submit" class="btn">Добавить</button>
             </div>
         </form>
-    </section>
+    </div>
     `,
     data() {
         return {
