@@ -112,6 +112,7 @@ button:hover {
     font-size: 20pt;
     background-color: #b4acc3;
 
+
 }
 
 .column>p {
@@ -153,7 +154,19 @@ button:hover {
     color: #665993;
     font-size: 20px;
 }
-
+.per{
+    height: 30px;
+    width: 320px;
+    margin: auto;
+    border: none;
+    background-color: #9f96b1;
+    color: white;
+    outline:none;
+}
+.per:hover{
+    background-color: #42395c;
+    cursor: pointer;
+}
 .card>a:last-child{
     font-size: 20px;
     color: #42395c;
@@ -162,6 +175,11 @@ button:hover {
 .card>a:hover{
     cursor: pointer;
     color: white;
+}
+
+.back{
+    color: #e6ddea;
+    font-size: 20px;
 }
 
 h3{
