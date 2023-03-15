@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Calibri;
+    margin: 0px;
+
+
+}
+.main{
+    margin: auto;
+    background-color: #63577a;
+    width: 320px;
+}
+
+
+
+h1{
+    margin: auto;
+    margin-top: 20px;
+    width: 320px;
+    background-color: #b4acc3;
+    text-align: center;
+    color: #42395c;
+
+}
+
+.form_control {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    height: 30px;
+    width: 300px;
+    padding:10px;
+    margin: auto;
+    border: none;
+    background-color: #9f96b1;
+    color: white;
+    outline:none;
+
+}
+
+input::placeholder {
+    color: #e6ddea;
+}
+
+.form_name {
+    margin-bottom: 20px;
+}
+
+button {
+    border: 0;
+    background-color: #b4acc3;
+    margin: auto;
+    padding: 10px;
+    width: 320px;
+    height: 48px;
+    color: white;
+
+}
+
+button:hover {
+    background-color: #42395c;
+    cursor: pointer;
+}
+
+.column {
+    margin-left: 30px;
+    float: left;
+    width: 400px;
+    padding: 10px;
+    min-height: 500px;
+    font-size: 20pt;
+    background-color: #b4acc3;
+
+}
+
+.column>p {
+    margin-top: -10px;
+    margin-left: -10px;
+    width: 420px;
+    color: #42395c;
+    padding-top: 15px;
+    height: 40px;
+    text-align: center;
+    background-color: #9f96b1;
+    font-size: 20px;
+}
+
+.list{
+    justify-content: space-around;
+    margin: auto;
+    padding-top: 100px;
+    width: 80%;
+    display: flex;
+
+}
+
+.completed{
+    text-decoration: line-through;
+    color: #42395c;
+
+}
+
+
+h3{
+    padding-top: 20px;
+    color: #42395c;
+    font-size: 20pt;
+    font-family: "Calibri Light";
+    text-align: center;
+}
+
+li{
+    color: white;
+    margin-left: 25px;
+
+}
+
+li:hover {
+    color: #42395c;
+    cursor: pointer;
+
+}
+
+.date{
+    color: #e6ddea;
+    text-align: center;
+}
