@@ -10,6 +10,7 @@ Vue.component('column', {
                 <column_1 :column_1="column_1"></column_1>
                 <column_2 :column_2="column_2"></column_2>
                 <column_3 :column_3="column_3"></column_3>
+                <column_4 :column_4="column4"></column_4>
             </div>
         </div>
     `,
@@ -20,79 +21,26 @@ Vue.component('column', {
             column_1: [],
             column_2: [],
             column_3: [],
+            column_4: [],
         }
 
-    },
-
-    methods:{
-        localSaveFirstColumn(){
-            localStorage.setItem('column_1', JSON.stringify(this.column_1));
-        },
-        localSaveSecondColumn(){
-            localStorage.setItem('column_2', JSON.stringify(this.column_2));
-        },
-        localSaveThirdColumn(){
-            localStorage.setItem('column_3', JSON.stringify(this.column_3));
-        },
     },
 
     mounted() {
 
-        this.column_1= JSON.parse(localStorage.getItem("column_1")) || [];
-        this.column_2 = JSON.parse(localStorage.getItem("column_2")) || [];
-        this.column_3 = JSON.parse(localStorage.getItem("column_3")) || [];
-
-        eventBus.$on('addColumn_1', ColumnCard => {
-
-            if (this.column_1.length < 3) {
-                this.column_1.push(ColumnCard)
-                this.localSaveFirstColumn()
-            } else {
-                alert('Максимальное колчиство карточек - три')
-
-            }
-        })
-        eventBus.$on('addColumn_2', ColumnCard => {
-            if (this.column_2.length < 5) {
-                this.column_2.push(ColumnCard)
-                this.column_1.splice(this.column_1.indexOf(ColumnCard), 1)
-                this.localSaveSecondColumn();
-            } else {
-                alert('Максимальное колчиство карточек - пять')
-
-            }
-
+        eventBus.$on('addColumn_1', card => {
+            this.column_1.push(card)
 
         })
-        eventBus.$on('addColumn_3', ColumnCard => {
-            this.column_3.push(ColumnCard)
-            this.column_2.splice(this.column_2.indexOf(ColumnCard), 1)
-            this.localSaveThirdColumn();
-
-        })
-
-
-
     },
 
-    watch: {
-        column_1(newValue) {
-            localStorage.setItem("column_1", JSON.stringify(newValue));
-        },
-        column_2(newValue) {
-            localStorage.setItem("column_2", JSON.stringify(newValue));
-        },
-        column_3(newValue) {
-            localStorage.setItem("column_3", JSON.stringify(newValue));
-        }
-    },
 
 })
 
 Vue.component('add_task', {
     template: `
     <div class="addForm">
-        <form>
+        <form @submit.prevent="onSubmit">
             <div class="form__control">
                 <div class="form__name field">
 
@@ -112,39 +60,33 @@ Vue.component('add_task', {
     data() {
         return {
             name: null,
-            point_1: null,
-            point_2: null,
-            point_3: null,
-            point_4: null,
-            point_5: null,
+            description: null,
             date: null,
-        }
+            deadline: null
+            }
     },
     methods: {
-        Submit() {
+        onSubmit() {
             let card = {
                 name: this.name,
-                points: [
-                    {name: this.point_1, completed: false},
-                    {name: this.point_2, completed: false},
-                    {name: this.point_3, completed: false},
-                    {name: this.point_4, completed: false},
-                    {name: this.point_5, completed: false}
-                ],
-                date: null,
-                status: 0,
+                description: this.description,
+                date: new Date().toLocaleString(),
+                deadline: this.deadline,
+                reason: [],
+                transfer: false,
+                edit: false,
+                editDate: null,
+                efDate: null
             }
             eventBus.$emit('addColumn_1', card)
-            this.name = null;
-            this.point_1 = null
-            this.point_2 = null
-            this.point_3 = null
-            this.point_4 = null
-            this.point_5 = null
+            this.name = null
+            this.description = null
+            this.date = null
+            this.deadline = null
         }
     }
-
 })
+
 
 Vue.component('column_1', {
     props: {
@@ -159,44 +101,53 @@ Vue.component('column_1', {
         },
     },
     template: `
-        <section id="main" class="main-alt">
-            <div class="column">
-            <p>Задачи</p>
-            <div class="card" v-for="card in column_1">
-                <h3>{{ card.name }}</h3>
-                    <ul class="tasks" v-for="task in card.points"
-                        v-if="task.name != null"
-                        @click="TaskCompleted(card, task)"
-                        :class="{completed: task.completed}">
-                        <li>
-                        {{ task.name }}
-                        </li>
-                    </ul>
-                    
-            </div> 
+<section id="main" class="main-alt">
+            <div class="column column__one">
+            <p>Запланированные задачи</p>
+                <div class="card" v-for="card in column_1">
+                <br>
+                   <div class="tasks">Название: {{ card.name }}</div>
+                    <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Дата создания: {{ card.date }}</div>
+                    <div class="tasks">Крайний срок: {{ card.deadline }}</div>
+                    <div class="tasks" v-if="card.editDate != null">Последнее изменение: {{ card.editDate }}</div>                              
+                    <div class="tasks" v-if="card.edit">
+                    <br>
+                        <form @submit.prevent="updateTask(card)">
+                            <p>Новое название: 
+                                <input type="text" v-model="card.name" placeholder="Название">
+                            </p>
+                            <p>Новое описание: 
+                                <textarea v-model="card.description"></textarea>
+                            </p>
+                            <p>
+                                <input type="submit" class="btn" value="Изменить карточку">
+                            </p>
+                        </form>
+                    </div>
+                    <a @click="deleteCard(card)" class="del">Удалить</a>  
+                    <a @click="card.edit = true" class="red">Редактировать</a><br>
+                    <a @click="nextColumn(card)">Следующая колонка</a>
+                </div>
             </div>
         </section>
     `,
 
     methods: {
-        TaskCompleted(ColumnCard, task) {
-            if (task.completed === false){
-                task.completed = true
-                ColumnCard.status += 1
-            }
-            let count = 0
-            for (let i = 0; i < 5; ++i) {
-                if (ColumnCard.points[i].name !== null) {
-                    count++;
-                }
-            }
-            if ((ColumnCard.status / count) * 100 >= 50) {
-                eventBus.$emit('addColumn_2', ColumnCard)
-                this.column_1.splice(this.column_1.indexOf(ColumnCard), 0)
-            }
+        nextColumn(card) {
+            this.column_1.splice(this.column_1.indexOf(card), 1)
+            eventBus.$emit('addColumn_2', card)
         },
-
-    },
+        deleteCard(card) {
+            this.column_1.splice(this.column_1.indexOf(card), 1)
+        },
+        updateTask(card){
+            card.edit = false
+            this.column_1.push(card)
+            this.column_1.splice(this.column_1.indexOf(card), 1)
+            card.editDate = new Date().toLocaleString()
+        }
+    }
 })
 
 
@@ -280,6 +231,25 @@ Vue.component('column_3', {
     `,
 })
 
+Vue.component('column_4', {
+    template: `
+        <section id="main" class="main-alt">
+            <div class="column column__four">
+            <p>Выполненные задачи</p>
+
+            </div>
+            </div>
+        </section>
+    `,
+    props: {
+        column_4: {
+            type: Array,
+        },
+        card: {
+            type: Object
+        }
+    },
+})
 let app = new Vue({
     el: '#app',
     data:{
