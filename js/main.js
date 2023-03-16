@@ -10,7 +10,7 @@ Vue.component('column', {
                 <column_1 :column_1="column_1"></column_1>
                 <column_2 :column_2="column_2"></column_2>
                 <column_3 :column_3="column_3"></column_3>
-                <column_4 :column_4="column4"></column_4>
+                <column_4 :column_4="column_4"></column_4>
             </div>
         </div>
     `,
@@ -54,6 +54,11 @@ Vue.component('column', {
         eventBus.$on('addColumn_3', card => {
             this.column_3.push(card)
             this.localThirdSecondColumn()
+        })
+
+        eventBus.$on('addColumn_4', card => {
+            this.column_4.push(card)
+            card.efDate = new Date().toLocaleDateString()
         })
     },
 
@@ -123,8 +128,9 @@ Vue.component('column_1', {
             type: Object,
         },
     },
+
     template: `
-<section id="main" class="main-alt">
+        <section id="main" class="main-alt">
             <div class="column column__one">
             <p>Запланированные задачи</p>
                 <div class="card" v-for="card in column_1">
@@ -303,15 +309,6 @@ Vue.component('column_3', {
 })
 
 Vue.component('column_4', {
-    template: `
-        <section id="main" class="main-alt">
-            <div class="column column__four">
-            <p>Выполненные задачи</p>
-
-            </div>
-            </div>
-        </section>
-    `,
     props: {
         column_4: {
             type: Array,
@@ -320,6 +317,22 @@ Vue.component('column_4', {
             type: Object
         }
     },
+    template: `
+        <section id="main" class="main-alt">
+            <div class="column column__four">
+            <p>Выполненные задачи</p>
+                <div class="card" v-for="card in column_4">
+                    <div class="tasks">Название: {{ card.name }}</div>
+                    <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Дата создания: {{ card.date }}</div>
+                    <div class="tasks">Крайний срок: {{ card.deadline }}</div>
+                    <div class="tasks" v-if="card.deadline >= card.efDate">Завершено вовремя</div>
+                    <div class="tasks" v-if="card.deadline < card.efDate">Завершено не вовремя</div>
+                </div>
+            </div>
+        </section>
+    `,
+
 })
 let app = new Vue({
     el: '#app',
