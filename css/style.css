@@ -190,19 +190,13 @@ h3{
     text-align: center;
 }
 
-li{
-    color: white;
-    margin-left: 25px;
-
-}
-
-li:hover {
-    color: #42395c;
-    cursor: pointer;
-
-}
-
-.date{
+.card > div:nth-child(5){
     color: #e6ddea;
-    text-align: center;
 }
+.column__four > div:last-child{
+    color: #42395c;
+}
+
+
+
+
