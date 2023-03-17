@@ -35,12 +35,16 @@ Vue.component('column', {
         localThirdSecondColumn(){
             localStorage.setItem('column_3', JSON.stringify(this.column_3));
         },
+        localThirdFourthColumn(){
+            localStorage.setItem('column_4', JSON.stringify(this.column_4));
+        },
     },
 
     mounted() {
         this.column_1= JSON.parse(localStorage.getItem("column_1")) || [];
         this.column_2 = JSON.parse(localStorage.getItem("column_2")) || [];
         this.column_3 = JSON.parse(localStorage.getItem("column_3")) || [];
+        this.column_4 = JSON.parse(localStorage.getItem("column_4")) || [];
 
         eventBus.$on('addColumn_1', card => {
             this.column_1.push(card)
@@ -58,9 +62,11 @@ Vue.component('column', {
 
         eventBus.$on('addColumn_4', card => {
             this.column_4.push(card)
+            this.localThirdFourthColumn()
             if (card.date > card.deadline) {
                 card.current = false
             }
+
         })
     },
 
@@ -100,7 +106,7 @@ Vue.component('add_task', {
             let card = {
                 name: this.name,
                 description: this.description,
-                date: new Date().toLocaleString(),
+                date: new Date().toLocaleDateString().split('.').reverse().join('-'),
                 deadline: this.deadline,
                 reason: [],
                 transfer: false,
@@ -327,7 +333,7 @@ Vue.component('column_4', {
                     <div class="tasks">Описание: {{ card.description }}</div>
                     <div class="tasks">Дата создания: {{ card.date }}</div>
                     <div class="tasks">Крайний срок: {{ card.deadline }}</div>
-                    <div class="tasks" v-if="card.current"">Завершено вовремя</div>
+                    <div class="tasks" v-if="card.current">Завершено вовремя</div>
                     <div class="tasks" v-else>Завершено не вовремя</div>
                 </div>
             </div>
