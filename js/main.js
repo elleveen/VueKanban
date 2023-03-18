@@ -85,6 +85,19 @@ Vue.component('add_task', {
             <div class="field">
                 <textarea required id="point" v-model="description" placeholder="Описание"> </textarea>
             </div>
+            <label for="rating">Rating:</label>
+            <select id="rating" v-model.number="rating">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            </select>
             <div class="field">
                 <input required type="date" id="point" v-model="deadline">
             </div>
@@ -97,6 +110,7 @@ Vue.component('add_task', {
         return {
             name: null,
             description: null,
+            rating: null,
             date: null,
             deadline: null
             }
@@ -106,6 +120,7 @@ Vue.component('add_task', {
             let card = {
                 name: this.name,
                 description: this.description,
+                rating: this.rating,
                 date: new Date().toLocaleDateString().split('.').reverse().join('-'),
                 deadline: this.deadline,
                 reason: [],
@@ -116,6 +131,7 @@ Vue.component('add_task', {
             eventBus.$emit('addColumn_1', card)
             this.name = null
             this.description = null
+            this.rating = null
             this.date = null
             this.deadline = null
         }
@@ -144,6 +160,7 @@ Vue.component('column_1', {
                 <br>
                    <div class="tasks">Название: {{ card.name }}</div>
                     <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Приоритетность: {{ card.rating }}</div>
                     <div class="tasks">Дата создания: {{ card.date }}</div>
                     <div class="tasks">Крайний срок: {{ card.deadline }}</div>
                     <div class="tasks" v-if="card.editDate != null">Последнее изменение: {{ card.editDate }}</div>                              
@@ -204,6 +221,7 @@ Vue.component('column_2', {
                 <br>
                    <div class="tasks">Название: {{ card.name }}</div>
                     <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Приоритетность: {{ card.rating }}</div>
                     <div class="tasks">Дата создания: {{ card.date }}</div>
                     <div class="tasks">Крайний срок: {{ card.deadline }}</div>
                     <div class="tasks" v-if="card.reason.length">Причина переноса: <p v-for="reason in card.reason">{{ reason }}</p></div>
@@ -260,6 +278,7 @@ Vue.component('column_3', {
                     <br>
                    <div class="tasks">Название: {{ card.name }}</div>
                     <div class="tasks">Описание: {{ card.description }}</div>
+                    <div class="tasks">Приоритетность: {{ card.rating }}</div>
                     <div class="tasks">Дата создания: {{ card.date }}</div>
                     <div class="tasks">Крайний срок: {{ card.deadline }}</div>
                     <div class="tasks" v-if="card.reason.length">Причина переноса: <p v-for="reason in card.reason">{{ reason }}</p></div>
